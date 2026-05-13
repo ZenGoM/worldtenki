@@ -1,0 +1,523 @@
+:root {
+    --primary-color: #2c3e50;
+    --text-main: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --card-bg: rgba(0, 0, 0, 0.5);
+    --card-border: rgba(255, 255, 255, 0.2);
+    --bg-gradient-start: #4facfe;
+    --bg-gradient-end: #00f2fe;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    /* Use CSS Variables for background image, default to none */
+    background-image: var(--bg-image, none);
+    background-color: #2c3e50;
+    /* Fallback */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    color: var(--text-main);
+}
+
+/* Seasonal Background Classes with Theme Colors for Card BG */
+body.season-spring {
+    --bg-image: url('./assets/bg_spring_1771774710284.png');
+    --card-bg: rgba(140, 45, 85, 0.55);
+    --card-border: rgba(255, 180, 200, 0.25);
+}
+
+body.season-summer {
+    --bg-image: url('./assets/bg_summer_1771774727800.png');
+    --card-bg: rgba(10, 65, 120, 0.55);
+    --card-border: rgba(160, 220, 255, 0.25);
+}
+
+body.season-autumn {
+    --bg-image: url('./assets/bg_autumn_1771774744442.png');
+    --card-bg: rgba(130, 50, 15, 0.55);
+    --card-border: rgba(255, 200, 150, 0.25);
+}
+
+body.season-winter {
+    --bg-image: url('./assets/bg_winter_1771774763778.png');
+    --card-bg: rgba(25, 30, 55, 0.65);
+    --card-border: rgba(200, 210, 255, 0.2);
+}
+
+.app-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    position: relative;
+    z-index: 10;
+}
+
+header {
+    text-align: center;
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.city-select {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9);
+    background: transparent;
+    color: var(--text-main);
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+    text-align: center;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+/* Optional wrapper styling to add custom dropdown arrow could be added, but minimal style is usually fine for this premium look */
+.city-select option {
+    background: var(--primary-color);
+    color: white;
+}
+
+.current-date {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+.weather-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 2.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+    animation: zoomIn 0.8s ease-out;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.weather-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.15);
+}
+
+.weather-icon-container {
+    margin-bottom: 1.5rem;
+}
+
+.weather-icon {
+    width: 80px;
+    height: 80px;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+    animation: float 4s ease-in-out infinite;
+}
+
+.temperature-container {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.temperature {
+    font-size: 5rem;
+    font-weight: 700;
+    line-height: 1;
+    text-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), 0 2px 5px rgba(0, 0, 0, 0.9);
+}
+
+.unit {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    margin-left: 0.2rem;
+}
+
+.weather-description {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    text-transform: capitalize;
+}
+
+.weather-details {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--card-border);
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.detail-item i {
+    color: var(--text-secondary);
+    width: 24px;
+    height: 24px;
+}
+
+.detail-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.detail-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+footer {
+    text-align: center;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.refresh-button {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--card-border);
+    color: white;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.refresh-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.refresh-button:active {
+    transform: scale(0.95);
+}
+
+.refresh-button .spin {
+    animation: spin 1s linear infinite;
+}
+
+.powered-by {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* Animations */
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .app-container {
+        padding: 1rem;
+    }
+
+    .temperature {
+        font-size: 4rem;
+    }
+
+    .weather-icon {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+/* Hourly Forecast Styles */
+.hourly-forecast-container {
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.hourly-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-main);
+}
+
+.hourly-scroll-container {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.4) transparent;
+    padding-bottom: 10px;
+}
+
+.hourly-scroll-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+.hourly-scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.hourly-scroll-container::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+}
+
+.hourly-content {
+    display: block;
+    /* Switch to block to contain absolute children */
+    min-width: 800px;
+    height: 160px;
+    /* Fixed height for the whole scrollable block */
+    position: relative;
+    padding-top: 10px;
+}
+
+.hourly-info-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: 100%;
+    position: absolute;
+    top: 10px;
+    left: 0;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.hourly-info-item {
+    flex: 1 0 0;
+    /* exact equal width distribution */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    pointer-events: auto;
+    padding-top: 5px;
+}
+
+.hourly-chart-container {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    z-index: 1;
+}
+
+.hourly-time {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.hourly-precip {
+    font-size: 0.8rem;
+    color: #64b5f6;
+    font-weight: 600;
+}
+
+.hourly-item-icon {
+    width: 24px;
+    height: 24px;
+    color: var(--text-main);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.hourly-temp {
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-shadow: 0 3px 8px rgba(0, 0, 0, 0.8);
+}
+
+/* Daily Forecast Styles */
+.daily-forecast-container {
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.daily-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-main);
+}
+
+.daily-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.daily-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.daily-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.daily-list::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+}
+
+.daily-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background 0.2s ease;
+}
+
+.daily-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.daily-date {
+    display: flex;
+    flex-direction: column;
+    width: 80px;
+}
+
+.daily-day-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.daily-day-date {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.daily-precip {
+    width: 40px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #64b5f6;
+    font-weight: 600;
+}
+
+.daily-item-icon {
+    width: 24px;
+    height: 24px;
+    color: var(--text-main);
+}
+
+.daily-temps {
+    display: flex;
+    gap: 0.8rem;
+    width: 90px;
+    justify-content: flex-end;
+}
+
+.daily-temp-max {
+    font-weight: 600;
+    color: #ffb7b2;
+}
+
+.daily-temp-min {
+    font-weight: 400;
+    color: #b2d8ff;
+}

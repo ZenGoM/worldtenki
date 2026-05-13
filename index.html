@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>広島市の今日の天気</title>
+    <meta name="description" content="広島市の今日の天気を確認できる美しいデザインのアプリです。">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=6">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <select class="city-select" id="city-select">
+                <option value="sapporo">札幌市</option>
+                <option value="sendai">仙台市</option>
+                <option value="tokyo">東京都</option>
+                <option value="nagoya">名古屋市</option>
+                <option value="osaka">大阪市</option>
+                <option value="hiroshima" selected>広島市</option>
+                <option value="fukuoka">福岡市</option>
+                <option value="naha">那覇市</option>
+            </select>
+            <p class="current-date" id="date-display">--月--日</p>
+        </header>
+
+        <main class="weather-card">
+            <div class="weather-icon-container">
+                <i id="weather-icon" data-lucide="cloud" class="weather-icon"></i>
+            </div>
+
+            <div class="temperature-container">
+                <h2 class="temperature" id="temperature">--</h2>
+                <span class="unit">°C</span>
+            </div>
+
+            <div class="weather-description">
+                <p id="weather-text">取得中...</p>
+            </div>
+
+            <div class="weather-details">
+                <div class="detail-item">
+                    <i data-lucide="umbrella"></i>
+                    <div class="detail-info">
+                        <span class="detail-label">降水確率</span>
+                        <span class="detail-value" id="precip-prob">--%</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i data-lucide="droplets"></i>
+                    <div class="detail-info">
+                        <span class="detail-label">湿度</span>
+                        <span class="detail-value" id="humidity">--%</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i data-lucide="wind"></i>
+                    <div class="detail-info">
+                        <span class="detail-label">風速</span>
+                        <span class="detail-value" id="wind-speed">--m/s</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <section class="hourly-forecast-container">
+            <h3 class="hourly-title">1時間ごとの予報</h3>
+            <div class="hourly-scroll-container">
+                <div class="hourly-content" id="hourly-content">
+                    <div class="hourly-info-row" id="hourly-info-row">
+                        <!-- JavaScriptでここに追加される -->
+                    </div>
+                    <div class="hourly-chart-container">
+                        <canvas id="hourly-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="daily-forecast-container">
+            <h3 class="daily-title">14日間の天気予報</h3>
+            <div class="daily-list" id="daily-list">
+                <!-- JavaScriptで日ごとの予報アイテムが追加される -->
+            </div>
+        </section>
+
+        <footer>
+            <button id="refresh-btn" class="refresh-button">
+                <i data-lucide="refresh-cw" id="refresh-icon"></i>
+                更新する
+            </button>
+            <p class="powered-by">Data provided by Open-Meteo</p>
+        </footer>
+    </div>
+
+    <script src="script.js?v=2"></script>
+</body>
+
+</html>
