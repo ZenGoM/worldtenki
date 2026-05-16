@@ -14,23 +14,139 @@ const dailyList = document.getElementById('daily-list');
 const refreshBtn = document.getElementById('refresh-btn');
 const refreshIcon = document.getElementById('refresh-icon');
 const citySelect = document.getElementById('city-select');
+const openGlobeBtn = document.getElementById('open-globe-btn');
+const closeGlobeBtn = document.getElementById('close-globe-btn');
+const globeModal = document.getElementById('globe-modal');
+const globeContainer = document.getElementById('globe-container');
+
+const localTimeDisplay = document.getElementById('local-time-display');
+const japanTimeDisplay = document.getElementById('japan-time-display');
+let clockInterval;
 
 let hourlyChartInstance = null;
 
 // City Coordinates map
 const CITIES = {
-    sapporo: { lat: 43.0621, lon: 141.3544 },
-    sendai: { lat: 38.2682, lon: 140.8694 },
-    tokyo: { lat: 35.6895, lon: 139.6917 },
-    nagoya: { lat: 35.1815, lon: 136.9066 },
-    osaka: { lat: 34.6937, lon: 135.5023 },
-    hiroshima: { lat: 34.3853, lon: 132.4553 },
-    fukuoka: { lat: 33.5902, lon: 130.4017 },
-    naha: { lat: 26.2124, lon: 127.6809 }
+    sapporo: { lat: 43.0621, lon: 141.3544, tz: 'Asia/Tokyo' },
+    sendai: { lat: 38.2682, lon: 140.8694, tz: 'Asia/Tokyo' },
+    tokyo: { lat: 35.6895, lon: 139.6917, tz: 'Asia/Tokyo' },
+    nagoya: { lat: 35.1815, lon: 136.9066, tz: 'Asia/Tokyo' },
+    osaka: { lat: 34.6937, lon: 135.5023, tz: 'Asia/Tokyo' },
+    hiroshima: { lat: 34.3853, lon: 132.4553, tz: 'Asia/Tokyo' },
+    fukuoka: { lat: 33.5902, lon: 130.4017, tz: 'Asia/Tokyo' },
+    naha: { lat: 26.2124, lon: 127.6809, tz: 'Asia/Tokyo' },
+    new_york: { lat: 40.7128, lon: -74.0060, tz: 'America/New_York' },
+    london: { lat: 51.5074, lon: -0.1278, tz: 'Europe/London' },
+    paris: { lat: 48.8566, lon: 2.3522, tz: 'Europe/Paris' },
+    sydney: { lat: -33.8688, lon: 151.2093, tz: 'Australia/Sydney' },
+    beijing: { lat: 39.9042, lon: 116.4074, tz: 'Asia/Shanghai' },
+    cairo: { lat: 30.0444, lon: 31.2357, tz: 'Africa/Cairo' },
+    rio: { lat: -22.9068, lon: -43.1729, tz: 'America/Sao_Paulo' },
+    moscow: { lat: 55.7558, lon: 37.6173, tz: 'Europe/Moscow' },
+    mumbai: { lat: 19.0760, lon: 72.8777, tz: 'Asia/Kolkata' }
 };
 
 let currentLat = CITIES.hiroshima.lat;
 let currentLon = CITIES.hiroshima.lon;
+let currentTz = CITIES.hiroshima.tz;
+
+let myGlobe = null;
+
+// Globe Functions
+function initGlobe() {
+    if (myGlobe) return; // Initialize only once
+    
+    // Prepare data
+    const gData = Object.keys(CITIES).map(key => {
+        const city = CITIES[key];
+        const option = Array.from(citySelect.options).find(opt => opt.value === key);
+        return {
+            id: key,
+            lat: city.lat,
+            lng: city.lon,
+            name: option ? option.text : key,
+            tz: city.tz
+        };
+    });
+
+    myGlobe = Globe()(globeContainer)
+        .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+        .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+        .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+        .htmlElementsData(gData)
+        .htmlElement(d => {
+            const el = document.createElement('div');
+            el.innerHTML = `
+                <div style="width: 8px; height: 8px; background: rgba(255, 255, 255, 0.9); border-radius: 50%; margin: 0 auto; box-shadow: 0 0 6px rgba(0,0,0,0.8);"></div>
+                <div style="color: white; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600; text-shadow: 0 2px 6px rgba(0,0,0,0.9); white-space: nowrap; margin-top: 4px;">${d.name}</div>
+            `;
+            el.style.display = 'flex';
+            el.style.flexDirection = 'column';
+            el.style.alignItems = 'center';
+            el.style.transform = 'translate(-50%, -4px)'; // Center the dot on the coordinate
+            el.style.cursor = 'pointer';
+            el.style.pointerEvents = 'auto';
+            el.onclick = () => {
+                currentLat = d.lat;
+                currentLon = d.lng;
+                currentTz = d.tz;
+                citySelect.value = d.id;
+                fetchWeather();
+                updateClocks();
+                closeGlobe();
+            };
+            return el;
+        });
+
+    // Handle resize
+    window.addEventListener('resize', () => {
+        if (!globeModal.classList.contains('hidden') && myGlobe) {
+            myGlobe.width(window.innerWidth).height(window.innerHeight);
+        }
+    });
+    
+    // Initial resize to fit screen
+    myGlobe.width(window.innerWidth).height(window.innerHeight);
+    
+    // Set initial point of view (Zoom in to about double size)
+    myGlobe.pointOfView({ lat: currentLat, lng: currentLon, altitude: 0.6 });
+}
+
+function openGlobe() {
+    globeModal.classList.remove('hidden');
+    // Delay slightly to ensure container is visible before sizing
+    setTimeout(() => {
+        if (!myGlobe) {
+            initGlobe();
+        } else {
+            myGlobe.width(window.innerWidth).height(window.innerHeight);
+        }
+        myGlobe.pointOfView({ lat: currentLat, lng: currentLon, altitude: 0.6 }, 1000);
+    }, 50);
+}
+
+function closeGlobe() {
+    globeModal.classList.add('hidden');
+}
+
+// Clock Functions
+function updateClocks() {
+    const now = new Date();
+    
+    // Local Time
+    const localOptions = { timeZone: currentTz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+    localTimeDisplay.textContent = new Intl.DateTimeFormat('ja-JP', localOptions).format(now);
+    
+    // Japan Time
+    const jpOptions = { timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+    japanTimeDisplay.textContent = `日本時間: ${new Intl.DateTimeFormat('ja-JP', jpOptions).format(now)}`;
+}
+
+function startClocks() {
+    if (clockInterval) clearInterval(clockInterval);
+    updateClocks();
+    clockInterval = setInterval(updateClocks, 1000);
+}
 
 // Set current date (Japan Time)
 function setDate() {
@@ -390,6 +506,7 @@ function updateDailyForecast(dailyData) {
 // Initialize
 function init() {
     setDate();
+    startClocks();
     fetchWeather();
 }
 
@@ -400,9 +517,13 @@ citySelect.addEventListener('change', (e) => {
     if (city) {
         currentLat = city.lat;
         currentLon = city.lon;
+        currentTz = city.tz;
         fetchWeather();
+        updateClocks();
     }
 });
+openGlobeBtn.addEventListener('click', openGlobe);
+closeGlobeBtn.addEventListener('click', closeGlobe);
 
 // Run on load
 document.addEventListener('DOMContentLoaded', () => {

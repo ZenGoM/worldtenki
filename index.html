@@ -8,10 +8,11 @@
     <meta name="description" content="広島市の今日の天気を確認できる美しいデザインのアプリです。">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=6">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/globe.gl"></script>
 </head>
 
 <body>
@@ -26,9 +27,27 @@
                 <option value="hiroshima" selected>広島市</option>
                 <option value="fukuoka">福岡市</option>
                 <option value="naha">那覇市</option>
+                <option value="new_york">ニューヨーク</option>
+                <option value="london">ロンドン</option>
+                <option value="paris">パリ</option>
+                <option value="sydney">シドニー</option>
+                <option value="beijing">北京</option>
+                <option value="cairo">カイロ</option>
+                <option value="rio">リオデジャネイロ</option>
+                <option value="moscow">モスクワ</option>
+                <option value="mumbai">ムンバイ</option>
             </select>
+            <br>
+            <button id="open-globe-btn" class="globe-btn">
+                <i data-lucide="globe-2"></i> 地球儀から選ぶ
+            </button>
             <p class="current-date" id="date-display">--月--日</p>
         </header>
+
+        <section class="time-card">
+            <div class="local-time-display" id="local-time-display">--:--:--</div>
+            <div class="japan-time-display" id="japan-time-display">日本時間: --:--:--</div>
+        </section>
 
         <main class="weather-card">
             <div class="weather-icon-container">
@@ -99,7 +118,18 @@
         </footer>
     </div>
 
-    <script src="script.js?v=2"></script>
+    <!-- Globe Modal -->
+    <div id="globe-modal" class="globe-modal hidden">
+        <div class="globe-modal-content">
+            <button id="close-globe-btn" class="close-globe-btn">
+                <i data-lucide="x"></i>
+            </button>
+            <div class="globe-instructions">ピンをタップして都市を選択</div>
+            <div id="globe-container"></div>
+        </div>
+    </div>
+
+    <script src="script.js?v=3"></script>
 </body>
 
 </html>
